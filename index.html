@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Twint+ Marketplace</title>
+</head>
+<body style="margin: 0;">
+  <nav style="background: #213d62; padding: 10px; margin-bottom: 40px;">
+    <a style="color: #fff; margin: 0 10px;" href="index.html">Twint+ transaction</a>
+  </nav>
+  <div style="width: 550px; margin-top: 20px;">
+    <button type="button" id="returning-customer" class="submit green">Pay - returning customer</button>
+    <button type="button" id="new-customer" class="submit red">Registration - new customer</button>
+  </div>
+  <script>
+    document.getElementById('returning-customer').addEventListener('click', function() { startPayment( 100 ); } );
+    document.getElementById('new-customer').addEventListener('click', function() { startPayment( 0 ); } );
+    function startPayment( amount ) {
+      let params = (new URL(document.location)).searchParams;
+      let host = params.get("environment") === 'pilot' ? "pay.sandbox.datatrans.com" : "5f16c5fe-6da3-11ea-bc55-0242ac130003.dtrx.ch";
+      window.location = "https://" + host + "/upp/jsp/upStart.jsp" +
+                      "?merchantId=1000011011" +
+                      "&sign=30916165706580013" +
+                      "&paymentmethod=TWI" +
+                      "&amount=" + amount +
+                      "&currency=CHF" +
+                      "&refno=TEST-" + new Date().toISOString() +
+                      "&terminalExternalId=" + params.get("terminalExternalId") +
+                      "&customerRelationUuid=" + params.get("customerRelationUuid");
+    }
+  </script>
+  <style>
+    button.submit {
+      color: rgb(255, 255, 255);
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 0.25rem;
+      border: 0px;
+      padding: 1rem;
+      cursor: pointer;
+      width: 15rem;
+    }
+    button.red {
+      background: rgb(193 25 25);
+    }
+    button.green {
+      background: rgb(98, 204, 29);
+    }
+    body {
+        background-color: rgb(242, 242, 242);
+    }
+  </style>
+</body>
