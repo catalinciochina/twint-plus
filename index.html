@@ -13,21 +13,40 @@
     <button type="button" id="returning-customer" class="submit green">Pay - returning customer</button>
     <button type="button" id="new-customer" class="submit red">Registration - new customer</button>
   </div>
-  <script>
+  <script type="application/javascript">
+    
     document.getElementById('returning-customer').addEventListener('click', function() { startPayment( 100 ); } );
     document.getElementById('new-customer').addEventListener('click', function() { startPayment( 0 ); } );
+    
+    const config = 
+          {
+            "dev" : {
+              "host": "5f16c5fe-6da3-11ea-bc55-0242ac130003.dtrx.ch",
+              "merchantId": "1000011011",
+              "sign": "30916165706580013"
+            },
+            
+            "sandbox" : {
+              "host": "pay.sandbox.datatrans.com"
+            }
+          };
+    
+    let url = new URL(document.location);
+    let path = url.pathname.split('/');  
+    let params = url.searchParams;
+    let environment = params.get("environment") === 'sandbox' ? config.sandbox : config.dev;
+    
+    console.log( environment );
+    
     function startPayment( amount ) {
-      let params = (new URL(document.location)).searchParams;
-      let host = params.get("environment") === 'pilot' ? "pay.sandbox.datatrans.com" : "5f16c5fe-6da3-11ea-bc55-0242ac130003.dtrx.ch";
-      window.location = "https://" + host + "/upp/jsp/upStart.jsp" +
-                      "?merchantId=1000011011" +
-                      "&sign=30916165706580013" +
+      
+      window.location = "https://" + environment.host + "/upp/jsp/upStart.jsp" +
+                      "?merchantId=" + environment.merchantId +
+                      "&sign=" + environment.sign +
                       "&paymentmethod=TWI" +
                       "&amount=" + amount +
                       "&currency=CHF" +
-                      "&refno=TEST-" + new Date().toISOString() +
-                      "&terminalExternalId=" + params.get("terminalExternalId") +
-                      "&customerRelationUuid=" + params.get("customerRelationUuid");
+                      "&refno=TEST-" + new Date().toISOString();
     }
   </script>
   <style>
